@@ -63,7 +63,6 @@ export async function getUser(req, res) {
 
     if (user)
       res.status(201).send({
-        id: user._id,
         username,
         email: user.email,
         first_name: user.first_name,
