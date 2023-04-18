@@ -57,7 +57,22 @@ export async function login(req, res) {
 }
 
 export async function getUser(req, res) {
-  res.json("getUser route");
+  try {
+    const { username } = req.params;
+    const user = await UserModel.findOne({ username });
+
+    if (user)
+      res.status(201).send({
+        id: user._id,
+        username,
+        email: user.email,
+        first_name: user.first_name,
+        last_name: user.last_name,
+      });
+    else throw { error: "Invalid Username" };
+  } catch (error) {
+    res.status(404).send(error);
+  }
 }
 
 export async function updateUser(req, res) {
