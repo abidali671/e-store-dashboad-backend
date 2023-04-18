@@ -36,8 +36,17 @@ export async function login(req, res) {
     await LoginSchema.validate({ username, password }, { abortEarly: false });
 
     const user = await UserModel.findOne({ username });
+    const isCorrectPassword =
+      user && (await bcrypt.compare(password, user.password));
 
-    if (user) res.status(200).send(user);
+    if (isCorrectPassword)
+      res.status(200).send({
+        id: user._id,
+        username,
+        email: user.email,
+        first_name: user.first_name,
+        last_name: user.last_name,
+      });
     else
       throw {
         non_field_error: "Invalid username or password",
