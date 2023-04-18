@@ -71,7 +71,7 @@ export async function getUser(req, res) {
       });
     else throw { error: "Invalid Username" };
   } catch (error) {
-    res.status(404).send(error);
+    res.status(404).send(ErrorHandler(error));
   }
 }
 
