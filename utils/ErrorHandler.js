@@ -9,7 +9,9 @@ const ErrorHandler = (error) => {
   } else if (error.name === "ValidationError") {
     if (error.inner) {
       // for yup schema errors
-      error.inner.forEach((error) => (new_error[error.path] = error.message));
+      error.inner.forEach(
+        (error) => (new_error[error.path || "non_field_error"] = error.message)
+      );
     } else {
       // for mongoose model schema errors
       Object.keys(error.errors).map((key) => {
