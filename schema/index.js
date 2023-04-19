@@ -1,1 +1,1 @@
-export { default as LoginSchema } from "./login.schema.js";
+export * from "./user.schema.js";
