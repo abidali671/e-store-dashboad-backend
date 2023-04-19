@@ -16,7 +16,7 @@ router.route("/auth/verifyOTP").get(controller.verifyOTP);
 router.route("/auth/createResetSession").get(controller.createResetSession);
 
 // Put Methods
-router.route("/auth/updateuser").put(controller.updateUser);
+router.route("/auth/user/:id").put(controller.updateUser);
 router.route("/auth/resetPassword").put(controller.updateUser);
 
 export default router;

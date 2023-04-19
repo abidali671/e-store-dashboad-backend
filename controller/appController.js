@@ -1,7 +1,8 @@
 import bcrypt from "bcrypt";
 import UserModel from "../model/User.model.js";
-import LoginSchema from "../schema/login.schema.js";
-import ErrorHandler from "../utils/ErrorHandler.js";
+
+import { ErrorHandler } from "../utils/index.js";
+import { LoginSchema } from "../schema/index.js";
 
 // Register API Controller
 export async function register(req, res) {
@@ -31,18 +32,16 @@ export async function register(req, res) {
 // Login API Controller
 export async function login(req, res) {
   try {
-    const { username, password } = req.body;
+    await LoginSchema.validate(req.body, { abortEarly: false, strict: true });
 
-    await LoginSchema.validate({ username, password }, { abortEarly: false });
-
-    const user = await UserModel.findOne({ username });
+    const user = await UserModel.findOne({ username: req.body.username });
     const isCorrectPassword =
-      user && (await bcrypt.compare(password, user.password));
+      user && (await bcrypt.compare(req.body.password, user.password));
 
     if (isCorrectPassword)
       res.status(200).send({
         id: user._id,
-        username,
+        username: user.username,
         email: user.email,
         first_name: user.first_name,
         last_name: user.last_name,
@@ -56,6 +55,7 @@ export async function login(req, res) {
   }
 }
 
+// Get User Api Controller
 export async function getUser(req, res) {
   try {
     const { username } = req.params;
@@ -74,8 +74,17 @@ export async function getUser(req, res) {
   }
 }
 
+// Update User Api Controller
 export async function updateUser(req, res) {
-  res.json("updateUser route");
+  try {
+    const id = req.params.id;
+    const body = req.body;
+    await UserModel.updateOne({ _id: id }, body);
+
+    res.status(201).send(body);
+  } catch (error) {
+    res.status(404).send({ error: "Invalid User ID" });
+  }
 }
 
 export async function generateOTP(req, res) {
