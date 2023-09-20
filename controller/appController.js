@@ -22,9 +22,15 @@ export async function register(req, res) {
     user.password = await bcrypt.hash(password, 10);
     await user.save();
 
-    res
-      .status(200)
-      .send({ username, email, first_name, last_name, id: user._id });
+    const token = jwt.sign(
+      { username, email, first_name, last_name, id: user._id },
+      Config.jwtSecret,
+      {
+        expiresIn: "24h",
+      }
+    );
+
+    res.status(200).send(token);
   } catch (error) {
     res.status(500).send(ErrorHandler(error));
   }
