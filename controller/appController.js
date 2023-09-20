@@ -91,9 +91,9 @@ export async function getUser(req, res) {
 // Update User Api Controller
 export async function updateUser(req, res) {
   try {
-    const id = req.params.id;
+    const user = req.user;
     const body = req.body;
-    await UserModel.updateOne({ _id: id }, body);
+    await UserModel.updateOne({ _id: user.id }, body);
 
     res.status(201).send(body);
   } catch (error) {
