@@ -41,7 +41,9 @@ export async function login(req, res) {
   try {
     await LoginSchema.validate(req.body, { abortEarly: false, strict: true });
 
-    const user = await UserModel.findOne({ username: req.body.username });
+    const user = await UserModel.findOne({
+      $or: [{ email: req.body.username }, { username: req.body.username }],
+    });
     const isCorrectPassword =
       user && (await bcrypt.compare(req.body.password, user.password));
 
