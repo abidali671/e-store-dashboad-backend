@@ -4,6 +4,7 @@ import morgan from "morgan";
 
 import connect from "./database/conn.js";
 import router from "./router/route.js";
+import Config from "./utils/Config.js";
 
 const app = express();
 
@@ -11,16 +12,13 @@ app.use(express.json());
 app.use(cors());
 app.use(morgan("tiny"));
 app.disable("x-powered-by");
-
-const port = 8080;
-
 app.use("/api", router);
 
 connect()
   .then(() => {
     try {
-      app.listen(port, () => {
-        console.log(`Server connected to http://localhost:${port}`);
+      app.listen(Config.port, () => {
+        console.log(`Server connected to http://localhost:${Config.port}`);
       });
     } catch (error) {
       console.log("Cannot connect to the server");
