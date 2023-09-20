@@ -4,6 +4,15 @@ import * as controller from "../controller/appController.js";
 
 const router = Router();
 
+router.route("/").get(function register(_, res) {
+  res.status(200).send({
+    endpoints: {
+      register: "/auth/register",
+      login: "/auth/login",
+    },
+  });
+});
+
 // Post Methods
 router.route("/auth/register").post(controller.register);
 // router.route("/auth/registerMail").post(controller);
