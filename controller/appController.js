@@ -1,8 +1,9 @@
 import bcrypt from "bcrypt";
 import UserModel from "../model/User.model.js";
 
-import { ErrorHandler } from "../utils/index.js";
+import { Config, ErrorHandler } from "../utils/index.js";
 import { LoginSchema } from "../schema/index.js";
+import jwt from "jsonwebtoken";
 
 // Register API Controller
 export async function register(req, res) {
@@ -38,19 +39,18 @@ export async function login(req, res) {
     const isCorrectPassword =
       user && (await bcrypt.compare(req.body.password, user.password));
 
-    if (isCorrectPassword)
-      res.status(200).send({
-        id: user._id,
-        username: user.username,
-        email: user.email,
-        first_name: user.first_name,
-        last_name: user.last_name,
+    if (isCorrectPassword) {
+      const token = jwt.sign(user, Config.jwtSecret, {
+        expiresIn: "24h",
       });
-    else
+
+      res.status(200).send({ token });
+    } else
       throw {
         non_field_error: "Invalid username or password",
       };
   } catch (error) {
+    console.log(error);
     res.status(500).send(ErrorHandler(error));
   }
 }
