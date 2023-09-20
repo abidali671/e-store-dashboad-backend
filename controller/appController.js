@@ -46,9 +46,15 @@ export async function login(req, res) {
       user && (await bcrypt.compare(req.body.password, user.password));
 
     if (isCorrectPassword) {
-      const token = jwt.sign(user, Config.jwtSecret, {
-        expiresIn: "24h",
-      });
+      const { first_name, last_name, username, email } = user;
+
+      const token = jwt.sign(
+        { id: user._id, first_name, last_name, username, email },
+        Config.jwtSecret,
+        {
+          expiresIn: "24h",
+        }
+      );
 
       res.status(200).send({ token });
     } else
