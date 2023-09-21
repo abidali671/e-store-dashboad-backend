@@ -93,6 +93,8 @@ export async function updateUser(req, res) {
   try {
     const user = req.user;
     const body = req.body;
+    if (req.params.id !== user.id) throw Error;
+
     await UserModel.updateOne({ _id: user.id }, body);
 
     res.status(201).send(body);
