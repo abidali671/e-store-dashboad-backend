@@ -3,6 +3,8 @@ import UserModel from "../model/User.model.js";
 
 import { Config, ErrorHandler } from "../utils/index.js";
 import { LoginSchema } from "../schema/index.js";
+
+import optGenerator from "otp-generator";
 import jwt from "jsonwebtoken";
 
 // Register API Controller
@@ -40,10 +42,10 @@ export async function register(req, res) {
 export async function login(req, res) {
   try {
     await LoginSchema.validate(req.body, { abortEarly: false, strict: true });
-
     const user = await UserModel.findOne({
-      $or: [{ email: req.body.username }, { username: req.body.username }],
+      $or: [{ email: username }, { username: username }],
     });
+
     const isCorrectPassword =
       user && (await bcrypt.compare(req.body.password, user.password));
 
@@ -64,7 +66,6 @@ export async function login(req, res) {
         non_field_error: "Invalid username or password",
       };
   } catch (error) {
-    console.log(error);
     res.status(500).send(ErrorHandler(error));
   }
 }
@@ -104,17 +105,56 @@ export async function updateUser(req, res) {
 }
 
 export async function generateOTP(req, res) {
-  res.json("generateOTP route");
+  req.app.locals.OTP = optGenerator.generate(6, {
+    upperCaseAlphabets: false,
+    lowerCaseAlphabets: false,
+    specialChars: false,
+  });
+
+  res.status(201).send({ code: req.app.locals.OTP });
 }
 
 export async function verifyOTP(req, res) {
-  res.json("generateOTP route");
+  try {
+    const { code } = req.query;
+
+    if (parseInt(req.app.locals.OTP) === parseInt(code)) {
+      req.app.locals.OTP = null;
+      req.app.locals.resetSession = true;
+      return res.status(201).send({ msg: "Verify Successfully" });
+    }
+    throw "Invalid OTP!";
+  } catch (error) {
+    res.status(400).send({ error });
+  }
 }
 
 export async function createResetSession(req, res) {
-  res.json("generateOTP route");
+  try {
+    if (req.app.locals.session) {
+      req.app.locals.session = false;
+      return res.status(201).send({ msg: "Access granted" });
+    }
+    throw "Session expired!";
+  } catch (error) {
+    return res.status(401).send({ error });
+  }
 }
 
 export async function resetPassword(req, res) {
-  res.json("generateOTP route");
+  try {
+    if (req.app.locals.session) {
+      req.app.locals.session = false;
+      const { password } = req.query;
+      const { username } = req.user;
+
+      const hashedPassword = await bcrypt.hash(password, 10);
+      await UserModel.updateOne({ username }, { password: hashedPassword });
+
+      res.status(201, "Password changed successfully");
+    }
+    throw "Session expired!";
+  } catch (error) {
+    res.status(401).send({ error });
+  }
 }
