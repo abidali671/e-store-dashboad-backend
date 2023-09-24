@@ -8,9 +8,14 @@ import optGenerator from "otp-generator";
 import jwt from "jsonwebtoken";
 
 // Register API Controller
-export async function register(req, res) {
+export async function register(req, res, next) {
   try {
     const { username, password, email, first_name, last_name } = req.body;
+    const verification_token = optGenerator.generate(12, {
+      upperCaseAlphabets: true,
+      lowerCaseAlphabets: true,
+      specialChars: true,
+    });
 
     const user = new UserModel({
       username,
@@ -18,21 +23,17 @@ export async function register(req, res) {
       first_name,
       last_name,
       password,
+      verification_token,
+      is_verified: false,
     });
 
     await user.validate();
     user.password = await bcrypt.hash(password, 10);
     await user.save();
 
-    const token = jwt.sign(
-      { username, email, first_name, last_name, id: user._id },
-      Config.jwtSecret,
-      {
-        expiresIn: "24h",
-      }
-    );
-
-    res.status(200).send(token);
+    req.body.verification_token = verification_token;
+    req.body.id = user._id;
+    next();
   } catch (error) {
     res.status(500).send(ErrorHandler(error));
   }

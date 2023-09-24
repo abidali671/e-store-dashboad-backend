@@ -1,5 +1,5 @@
 import nodemailer from "nodemailer";
-import { Config } from "../utils";
+import { Config } from "../utils/index.js";
 
 const nodeConfig = {
   service: "gmail",
@@ -9,17 +9,27 @@ const nodeConfig = {
   },
 };
 
-export default async function Mailer(req, res) {
+export async function RegisterMail(req, res) {
   try {
+    const { email, first_name, last_name, verification_token, id } = req.body;
     const transporter = nodemailer.createTransport(nodeConfig);
 
-    const info = await transporter.sendMail({
+    await transporter.sendMail({
       from: Config.MAILER_EMAIL,
-      to: "abidaliknightaur2@gmail.com", // list of receivers
-      subject: "E Store email verification mail", // Subject line
-      html: "<p>Your verification code is: <b>331155</b></p>", // html body
+      to: email,
+      subject: "Verify Your Account - Sign-Up Confirmation",
+      html: `<div><b>Dear ${first_name} ${last_name},</b>
+      <p>
+      To complete your sign-up, please click the verification link below:<br/>
+      <a target='_blank' href="http://localhost:8080/api/auth/verify?id=${id}&token=${verification_token}">https://e-store-dashboad-backend.vercel.app/api/auth/verify?id=${id}&token=${verification_token}</a></p>
+      <p>Thank you for joining E Store!</p>
+      <p>Best Regards</p>
+      <p>Team E Store</p>
+      </div>`, // html body
     });
-    res.status(201).send({ data: info });
+    res
+      .status(200)
+      .send({ msg: `Register verification mail sent to: ${email}` });
   } catch (error) {
     res.status(500).send({ error });
   }
