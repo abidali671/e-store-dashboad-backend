@@ -14,6 +14,8 @@ export async function RegisterMail(req, res) {
     const { email, first_name, last_name, verification_token, id } = req.body;
     const transporter = nodemailer.createTransport(nodeConfig);
 
+    const verification_link = `${Config.FRONT_END_BASE_URL}/api/auth/verify?id=${id}&token=${verification_token}`;
+
     await transporter.sendMail({
       from: Config.MAILER_EMAIL,
       to: email,
@@ -21,7 +23,7 @@ export async function RegisterMail(req, res) {
       html: `<div><b>Dear ${first_name} ${last_name},</b>
       <p>
       To complete your sign-up, please click the verification link below:<br/>
-      <a target='_blank' href="${BASE_URL}/api/auth/verify?id=${id}&token=${verification_token}">${BASE_URL}/api/auth/verify?id=${id}&token=${verification_token}</a></p>
+      <a target='_blank' href='${verification_link}'>${verification_link}</a></p>
       <p>Thank you for joining E Store!</p>
       <p>Best Regards</p>
       <p>Team E Store</p>

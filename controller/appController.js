@@ -44,14 +44,19 @@ export async function login(req, res) {
   try {
     await LoginSchema.validate(req.body, { abortEarly: false, strict: true });
     const user = await UserModel.findOne({
-      $or: [{ email: username }, { username: username }],
+      $or: [{ email: req.body.username }, { username: req.body.username }],
     });
 
     const isCorrectPassword =
       user && (await bcrypt.compare(req.body.password, user.password));
 
     if (isCorrectPassword) {
-      const { first_name, last_name, username, email } = user;
+      const { first_name, last_name, username, email, verified } = user;
+
+      if (!verified)
+        throw {
+          non_field_error: "User is not verified",
+        };
 
       const token = jwt.sign(
         { id: user._id, first_name, last_name, username, email },
@@ -157,5 +162,31 @@ export async function resetPassword(req, res) {
     throw "Session expired!";
   } catch (error) {
     res.status(401).send({ error });
+  }
+}
+export async function verifyUser(req, res) {
+  try {
+    const { token, id } = req.params;
+
+    console.log("id", id);
+
+    const user = await UserModel.findOne({
+      _id: id,
+    });
+
+    if (!user || user.verificationToken !== token) {
+      throw "Invalid verification token.";
+    }
+
+    user.verified = true;
+    user.verificationToken = undefined;
+    await user.save();
+
+    res.json({
+      message: "Email verified. You can now log in.",
+      data: req.query,
+    });
+  } catch (error) {
+    res.status(404).json({ error });
   }
 }

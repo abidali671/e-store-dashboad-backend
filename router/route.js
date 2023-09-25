@@ -23,24 +23,7 @@ router.route("/auth/register-mail").post(RegisterMail);
 router.route("/auth/login").post(controller.login);
 
 // Get Methods
-router.route("/auth/verify").get(async (req, res) => {
-  // const token = req.params.token;
-
-  // // 5. Verify user and mark as verified
-  // const user = await User.findOne({ verificationToken: token });
-
-  // if (!user) {
-  //   return res.status(404).json({ message: "Invalid verification token." });
-  // }
-
-  // user.verified = true;
-  // user.verificationToken = undefined;
-  // await user.save();
-
-  console.log("req.query =>", req.query);
-
-  res.json({ message: "Email verified. You can now log in.", data: req.query });
-});
+router.route("/auth/verify").get(controller.verifyUser);
 router.route("/auth/user/:username").get(controller.getUser);
 router
   .route("/auth/generate-otp")
