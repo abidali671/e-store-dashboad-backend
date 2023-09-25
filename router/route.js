@@ -1,6 +1,6 @@
 import { Router } from "express";
 import Auth from "../middleware/auth.js";
-import VerifyUser from "../middleware/verifyUser.js";
+import VerifyUser from "../middleware/VerifyUser.js";
 import localVariables from "../middleware/localVariables.js";
 import { RegisterMail } from "../controller/Mailer.js";
 import * as controller from "../controller/appController.js";
