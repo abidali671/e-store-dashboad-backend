@@ -14,7 +14,7 @@ export async function register(req, res, next) {
     const verification_token = optGenerator.generate(12, {
       upperCaseAlphabets: true,
       lowerCaseAlphabets: true,
-      specialChars: true,
+      specialChars: false,
     });
 
     const user = new UserModel({

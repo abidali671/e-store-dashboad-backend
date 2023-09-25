@@ -14,7 +14,7 @@ export async function RegisterMail(req, res) {
     const { email, first_name, last_name, verification_token, id } = req.body;
     const transporter = nodemailer.createTransport(nodeConfig);
 
-    const verification_link = `${Config.FRONT_END_BASE_URL}/api/auth/verify?id=${id}&token=${verification_token}`;
+    const verification_link = `${Config.FRONT_END_BASE_URL}/verify?id=${id}&token=${verification_token}`;
 
     await transporter.sendMail({
       from: Config.MAILER_EMAIL,
