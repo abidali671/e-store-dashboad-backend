@@ -25,6 +25,8 @@ export const UserSchema = new mongoose.Schema({
     type: String,
     required: [true, "Last name is required"],
   },
+  verification_token: { type: String },
+  verified: { type: Boolean },
 });
 
 export default mongoose.model.User || mongoose.model("User", UserSchema);

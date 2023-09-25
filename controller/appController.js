@@ -24,7 +24,7 @@ export async function register(req, res, next) {
       last_name,
       password,
       verification_token,
-      is_verified: false,
+      verified: false,
     });
 
     await user.validate();
@@ -166,15 +166,13 @@ export async function resetPassword(req, res) {
 }
 export async function verifyUser(req, res) {
   try {
-    const { token, id } = req.params;
-
-    console.log("id", id);
+    const { token, id } = req.query;
 
     const user = await UserModel.findOne({
       _id: id,
     });
 
-    if (!user || user.verificationToken !== token) {
+    if (!user || user.verification_token !== token) {
       throw "Invalid verification token.";
     }
 
@@ -187,6 +185,7 @@ export async function verifyUser(req, res) {
       data: req.query,
     });
   } catch (error) {
+    console.log("error", error);
     res.status(404).json({ error });
   }
 }
