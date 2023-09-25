@@ -21,11 +21,11 @@ export async function RegisterMail(req, res) {
       html: `<div><b>Dear ${first_name} ${last_name},</b>
       <p>
       To complete your sign-up, please click the verification link below:<br/>
-      <a target='_blank' href="http://localhost:8080/api/auth/verify?id=${id}&token=${verification_token}">https://e-store-dashboad-backend.vercel.app/api/auth/verify?id=${id}&token=${verification_token}</a></p>
+      <a target='_blank' href="${BASE_URL}/api/auth/verify?id=${id}&token=${verification_token}">${BASE_URL}/api/auth/verify?id=${id}&token=${verification_token}</a></p>
       <p>Thank you for joining E Store!</p>
       <p>Best Regards</p>
       <p>Team E Store</p>
-      </div>`, // html body
+      </div>`,
     });
     res
       .status(200)
