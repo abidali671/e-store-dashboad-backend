@@ -10,6 +10,7 @@ export const CategorySchema = new mongoose.Schema({
     type: String,
     required: [true, "Slug is required"],
     trim: true,
+    unique: true,
   },
   description: {
     type: String,
