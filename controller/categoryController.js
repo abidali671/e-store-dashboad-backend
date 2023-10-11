@@ -1,4 +1,5 @@
 import CategoryModal from "../model/Category.model.js";
+import CategorySchema from "../schema/category.schema.js";
 import ErrorHandler from "../utils/ErrorHandler.js";
 
 // Get Categories Api Controller
@@ -21,7 +22,7 @@ async function getCategories(_, res) {
   }
 }
 
-// Register API Controller
+// Create Category API Controller
 export async function createCategory(req, res) {
   try {
     const { name, slug, description } = req.body;
@@ -46,4 +47,27 @@ export async function createCategory(req, res) {
   }
 }
 
-export default { getCategories, createCategory };
+// Create Category API Controller
+export async function updateCategory(req, res) {
+  try {
+    const { id } = req.params;
+    const { name, description, slug, thumbnail } = await CategoryModal.findOne({
+      _id: id,
+    });
+
+    const updatedCategory = { name, description, slug, thumbnail, ...req.body };
+
+    await CategorySchema.validate(updatedCategory, {
+      strict: true,
+      abortEarly: false,
+    });
+
+    await CategoryModal.updateOne({ _id: id }, updatedCategory);
+
+    res.status(201).send(req.body);
+  } catch (error) {
+    res.status(500).send(ErrorHandler(error));
+  }
+}
+
+export default { getCategories, createCategory, updateCategory };
