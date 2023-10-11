@@ -16,6 +16,9 @@ export const CategorySchema = new mongoose.Schema({
     type: String,
     required: [true, "Description is required"],
   },
+  thumbnail: {
+    type: String,
+  },
 });
 
 export default mongoose.model.Category ||
