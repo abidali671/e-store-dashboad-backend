@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import morgan from "morgan";
+import path from "path";
 
 import connect from "./database/conn.js";
 import router from "./router/route.js";
@@ -13,6 +14,7 @@ app.use(cors());
 app.use(morgan("tiny"));
 app.disable("x-powered-by");
 app.use(express.urlencoded({ extended: false }));
+app.use("/images", express.static(path.join("images")));
 app.use("/api", router);
 
 connect()
