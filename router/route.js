@@ -7,6 +7,7 @@ import VerifyUser from "../middleware/VerifyUser.js";
 import localVariables from "../middleware/localVariables.js";
 
 import * as controller from "../controller/appController.js";
+import ImageUploader from "../middleware/ImageUploader.js";
 
 const router = Router();
 
@@ -36,5 +37,13 @@ router.route("/auth/resetPassword").put(VerifyUser, controller.updateUser);
 // Category Routes
 router.route("/category").get(categoryController.getCategories);
 router.route("/category").post(categoryController.createCategory);
+router.route("/category/:id").patch(categoryController.updateCategory);
+
+router
+  .route("/category/:id/thumbnail")
+  .post(
+    ImageUploader("./images/CategoryThumbnails").single("file"),
+    categoryController.updateCategoryThumbnail
+  );
 
 export default router;

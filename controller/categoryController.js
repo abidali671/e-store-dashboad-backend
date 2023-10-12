@@ -1,5 +1,6 @@
 import CategoryModal from "../model/Category.model.js";
 import CategorySchema from "../schema/category.schema.js";
+import Config from "../utils/Config.js";
 import ErrorHandler from "../utils/ErrorHandler.js";
 
 // Get Categories Api Controller
@@ -48,7 +49,7 @@ export async function createCategory(req, res) {
 }
 
 // Create Category API Controller
-export async function updateCategory(req, res) {
+async function updateCategory(req, res) {
   try {
     const { id } = req.params;
     const { name, description, slug, thumbnail } = await CategoryModal.findOne({
@@ -70,4 +71,25 @@ export async function updateCategory(req, res) {
   }
 }
 
-export default { getCategories, createCategory, updateCategory };
+async function updateCategoryThumbnail(req, res) {
+  try {
+    const { destination, filename } = req.file;
+    const { id } = req.params;
+
+    const thumbnail_url =
+      destination.replace(".", Config.BASE_URL) + "/" + filename;
+
+    await CategoryModal.updateOne({ _id: id }, { thumbnail: thumbnail_url });
+
+    res.status(201).send({ url: thumbnail_url });
+  } catch (error) {
+    res.status(500).send(ErrorHandler(error));
+  }
+}
+
+export default {
+  getCategories,
+  createCategory,
+  updateCategory,
+  updateCategoryThumbnail,
+};
