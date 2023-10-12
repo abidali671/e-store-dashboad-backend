@@ -10,10 +10,11 @@ async function getCategories(_, res) {
 
     if (categories)
       res.status(200).send(
-        categories.map(({ name, slug, description, _id }) => ({
+        categories.map(({ name, slug, description, thumbnail, _id }) => ({
           id: _id,
           name,
           slug,
+          thumbnail,
           description,
         }))
       );
