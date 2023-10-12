@@ -4,6 +4,7 @@ import morgan from "morgan";
 import path from "path";
 import bodyParser from "body-parser";
 import { fileURLToPath } from "url";
+import { v2 as cloudinary } from "cloudinary";
 
 import connect from "./database/conn.js";
 import router from "./router/route.js";
@@ -12,6 +13,12 @@ import Config from "./utils/Config.js";
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+cloudinary.config({
+  cloud_name: Config.COULD_NAME,
+  api_key: Config.CLOUDINARY_API_KEY,
+  api_secret: Config.CLOUDINARY_API_SECRET,
+});
 
 app.use(express.json());
 app.use(cors());
