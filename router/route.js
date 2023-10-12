@@ -5,9 +5,9 @@ import { categoryController } from "../controller/index.js";
 import Auth from "../middleware/auth.js";
 import VerifyUser from "../middleware/VerifyUser.js";
 import localVariables from "../middleware/localVariables.js";
+import FileUploader from "../middleware/FileUploader.js";
 
 import * as controller from "../controller/appController.js";
-import ImageUploader from "../middleware/ImageUploader.js";
 
 const router = Router();
 
@@ -42,7 +42,7 @@ router.route("/category/:id").patch(categoryController.updateCategory);
 router
   .route("/category/:id/thumbnail")
   .post(
-    ImageUploader("./images/CategoryThumbnails").single("file"),
+    FileUploader.single("file"),
     categoryController.updateCategoryThumbnail
   );
 

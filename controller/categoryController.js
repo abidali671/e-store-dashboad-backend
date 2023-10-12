@@ -1,7 +1,7 @@
 import CategoryModal from "../model/Category.model.js";
 import CategorySchema from "../schema/category.schema.js";
-import Config from "../utils/Config.js";
 import ErrorHandler from "../utils/ErrorHandler.js";
+import { v2 as cloudinary } from "cloudinary";
 
 // Get Categories Api Controller
 async function getCategories(_, res) {
@@ -74,15 +74,18 @@ async function updateCategory(req, res) {
 
 async function updateCategoryThumbnail(req, res) {
   try {
-    const { destination, filename } = req.file;
     const { id } = req.params;
 
-    const thumbnail_url =
-      destination.replace(".", Config.BASE_URL) + "/" + filename;
+    const b64 = Buffer.from(req.file.buffer).toString("base64");
+    let dataURI = "data:" + req.file.mimetype + ";base64," + b64;
 
-    await CategoryModal.updateOne({ _id: id }, { thumbnail: thumbnail_url });
+    const response = await cloudinary.uploader.upload(dataURI, {
+      resource_type: "auto",
+    });
 
-    res.status(201).send({ url: thumbnail_url });
+    await CategoryModal.updateOne({ _id: id }, { thumbnail: response.url });
+
+    res.status(201).send({ url: response.url });
   } catch (error) {
     res.status(500).send(ErrorHandler(error));
   }
