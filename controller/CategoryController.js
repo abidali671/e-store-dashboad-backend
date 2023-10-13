@@ -32,6 +32,17 @@ async function getCategory(req, res) {
   }
 }
 
+async function deleteCategory(req, res) {
+  try {
+    const { slug } = req.params;
+    await CategoryModal.deleteOne({ slug });
+
+    res.status(201).send({ msg: "Category deleted successfully." });
+  } catch (error) {
+    res.status(404).send(ErrorHandler(error));
+  }
+}
+
 async function createCategory(req, res) {
   try {
     const { name, slug, description } = req.body;
@@ -100,6 +111,7 @@ async function updateCategoryThumbnail(req, res) {
 export default {
   getCategories,
   getCategory,
+  deleteCategory,
   createCategory,
   updateCategory,
   updateCategoryThumbnail,
