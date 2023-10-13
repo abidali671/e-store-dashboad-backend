@@ -1,1 +1,1 @@
-export { default as categoryController } from "./categoryController.js";
+export { default as ategoryController } from "./ategoryController.js";

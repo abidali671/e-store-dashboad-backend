@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { RegisterMail } from "../controller/Mailer.js";
-import { categoryController } from "../controller/index.js";
+import { ategoryController } from "../controller/index.js";
 
 import Auth from "../middleware/auth.js";
 import VerifyUser from "../middleware/VerifyUser.js";
@@ -35,15 +35,12 @@ router.route("/auth/user/:id").put(Auth, controller.updateUser);
 router.route("/auth/resetPassword").put(VerifyUser, controller.updateUser);
 
 // Category Routes
-router.route("/category").get(categoryController.getCategories);
-router.route("/category").post(categoryController.createCategory);
-router.route("/category/:id").patch(categoryController.updateCategory);
+router.route("/category").get(ategoryController.getCategories);
+router.route("/category").post(ategoryController.createCategory);
+router.route("/category/:id").patch(ategoryController.updateCategory);
 
 router
   .route("/category/:id/thumbnail")
-  .post(
-    FileUploader.single("file"),
-    categoryController.updateCategoryThumbnail
-  );
+  .post(FileUploader.single("file"), ategoryController.updateCategoryThumbnail);
 
 export default router;
