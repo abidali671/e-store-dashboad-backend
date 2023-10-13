@@ -18,13 +18,18 @@ const ProductSchema = new mongoose.Schema({
   },
   short_description: {
     type: String,
-    required: [true, "Description is required"],
+    required: [true, "Short Description is required"],
   },
   thumbnails: {
     type: [{ type: String }],
   },
   tags: {
     type: [{ type: String }],
+  },
+  category: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Category",
+    required: [true, "Category is required"],
   },
 });
 
