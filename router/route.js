@@ -40,8 +40,9 @@ router.route("/auth/resetPassword").put(VerifyUser, AuthController.updateUser);
 
 // Category Routes
 router.route("/category").get(CategoryController.getCategories);
-router.route("/category/:slug").get(CategoryController.getCategory);
 router.route("/category").post(CategoryController.createCategory);
+router.route("/category/:slug").get(CategoryController.getCategory);
+router.route("/category/:slug").delete(CategoryController.deleteCategory);
 router.route("/category/:id").patch(CategoryController.updateCategory);
 router
   .route("/category/:id/thumbnail")
@@ -53,5 +54,6 @@ router
 // Product Routes
 router.route("/products").get(ProductController.getProducts);
 router.route("/products").post(ProductController.createProduct);
+router.route("/products/:slug").get(ProductController.getProduct);
 
 export default router;

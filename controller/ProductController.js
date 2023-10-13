@@ -17,6 +17,23 @@ async function getProducts(_, res) {
   }
 }
 
+async function getProduct(req, res) {
+  try {
+    const { slug } = req.params;
+
+    const product = await ProductModel.findOne({ slug })
+      .populate("category")
+      .lean();
+
+    res.status(200).send({
+      ...CleanObject(product),
+      category: CleanObject(product.category),
+    });
+  } catch (error) {
+    res.status(404).send(ErrorHandler(error));
+  }
+}
+
 async function createProduct(req, res) {
   try {
     const { name, slug, description, short_description, tags, category } =
@@ -92,5 +109,6 @@ async function createProduct(req, res) {
 
 export default {
   getProducts,
+  getProduct,
   createProduct,
 };
