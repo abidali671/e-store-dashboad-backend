@@ -9,7 +9,7 @@ const nodeConfig = {
   },
 };
 
-export async function RegisterMail(req, res) {
+async function RegisterMail(req, res) {
   try {
     const { email, first_name, last_name, verification_token, id } = req.body;
     const transporter = nodemailer.createTransport(nodeConfig);
@@ -36,3 +36,5 @@ export async function RegisterMail(req, res) {
     res.status(500).send({ error });
   }
 }
+
+export default { RegisterMail };

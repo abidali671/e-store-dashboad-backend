@@ -7,8 +7,7 @@ import { LoginSchema } from "../schema/index.js";
 import optGenerator from "otp-generator";
 import jwt from "jsonwebtoken";
 
-// Register API Controller
-export async function register(req, res, next) {
+async function register(req, res, next) {
   try {
     const { username, password, email, first_name, last_name } = req.body;
     const verification_token = optGenerator.generate(12, {
@@ -39,8 +38,7 @@ export async function register(req, res, next) {
   }
 }
 
-// Login API Controller
-export async function login(req, res) {
+async function login(req, res) {
   try {
     await LoginSchema.validate(req.body, { abortEarly: false, strict: true });
     const user = await UserModel.findOne({
@@ -76,8 +74,7 @@ export async function login(req, res) {
   }
 }
 
-// Get User Api Controller
-export async function getUser(req, res) {
+async function getUser(req, res) {
   try {
     const { username } = req.params;
     const user = await UserModel.findOne({ username });
@@ -95,8 +92,7 @@ export async function getUser(req, res) {
   }
 }
 
-// Update User Api Controller
-export async function updateUser(req, res) {
+async function updateUser(req, res) {
   try {
     const user = req.user;
     const body = req.body;
@@ -110,7 +106,7 @@ export async function updateUser(req, res) {
   }
 }
 
-export async function generateOTP(req, res) {
+async function generateOTP(req, res) {
   req.app.locals.OTP = optGenerator.generate(6, {
     upperCaseAlphabets: false,
     lowerCaseAlphabets: false,
@@ -120,7 +116,7 @@ export async function generateOTP(req, res) {
   res.status(201).send({ code: req.app.locals.OTP });
 }
 
-export async function verifyOTP(req, res) {
+async function verifyOTP(req, res) {
   try {
     const { code } = req.query;
 
@@ -135,7 +131,7 @@ export async function verifyOTP(req, res) {
   }
 }
 
-export async function createResetSession(req, res) {
+async function createResetSession(req, res) {
   try {
     if (req.app.locals.session) {
       req.app.locals.session = false;
@@ -147,7 +143,7 @@ export async function createResetSession(req, res) {
   }
 }
 
-export async function resetPassword(req, res) {
+async function resetPassword(req, res) {
   try {
     if (req.app.locals.session) {
       req.app.locals.session = false;
@@ -164,7 +160,7 @@ export async function resetPassword(req, res) {
     res.status(401).send({ error });
   }
 }
-export async function verifyUser(req, res) {
+async function verifyUser(req, res) {
   try {
     const { token, id } = req.query;
 
@@ -189,3 +185,15 @@ export async function verifyUser(req, res) {
     res.status(404).json({ error });
   }
 }
+
+export default {
+  register,
+  login,
+  getUser,
+  updateUser,
+  generateOTP,
+  verifyOTP,
+  createResetSession,
+  resetPassword,
+  verifyUser,
+};

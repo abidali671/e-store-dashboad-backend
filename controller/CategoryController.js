@@ -25,7 +25,7 @@ async function getCategories(_, res) {
 }
 
 // Create Category API Controller
-export async function createCategory(req, res) {
+async function createCategory(req, res) {
   try {
     const { name, slug, description } = req.body;
 
