@@ -40,6 +40,7 @@ router.route("/auth/resetPassword").put(VerifyUser, AuthController.updateUser);
 
 // Category Routes
 router.route("/category").get(CategoryController.getCategories);
+router.route("/category/:slug").get(CategoryController.getCategory);
 router.route("/category").post(CategoryController.createCategory);
 router.route("/category/:id").patch(CategoryController.updateCategory);
 router

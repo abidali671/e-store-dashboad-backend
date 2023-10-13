@@ -1,30 +1,37 @@
 import CategoryModal from "../model/Category.model.js";
 import CategorySchema from "../schema/category.schema.js";
-import ErrorHandler from "../utils/ErrorHandler.js";
+import { CleanObject, ErrorHandler } from "../utils/index.js";
 import { v2 as cloudinary } from "cloudinary";
 
-// Get Categories Api Controller
 async function getCategories(_, res) {
   try {
     const categories = await CategoryModal.find();
 
-    if (categories)
-      res.status(200).send(
-        categories.map(({ name, slug, description, thumbnail, _id }) => ({
-          id: _id,
-          name,
-          slug,
-          thumbnail,
-          description,
-        }))
-      );
-    else throw { error: "No category is created." };
+    res.status(200).send(
+      categories.map(({ name, slug, description, thumbnail, _id }) => ({
+        id: _id,
+        name,
+        slug,
+        thumbnail,
+        description,
+      }))
+    );
   } catch (error) {
     res.status(404).send(ErrorHandler(error));
   }
 }
 
-// Create Category API Controller
+async function getCategory(req, res) {
+  try {
+    const { slug } = req.params;
+    const category = await CategoryModal.findOne({ slug }).lean();
+
+    res.status(200).send(CleanObject(category));
+  } catch (error) {
+    res.status(404).send(ErrorHandler(error));
+  }
+}
+
 async function createCategory(req, res) {
   try {
     const { name, slug, description } = req.body;
@@ -49,7 +56,6 @@ async function createCategory(req, res) {
   }
 }
 
-// Create Category API Controller
 async function updateCategory(req, res) {
   try {
     const { id } = req.params;
@@ -93,6 +99,7 @@ async function updateCategoryThumbnail(req, res) {
 
 export default {
   getCategories,
+  getCategory,
   createCategory,
   updateCategory,
   updateCategoryThumbnail,
