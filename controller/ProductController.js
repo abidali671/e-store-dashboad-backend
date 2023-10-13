@@ -34,6 +34,20 @@ async function getProduct(req, res) {
   }
 }
 
+async function deleteProduct(req, res) {
+  try {
+    const { slug } = req.params;
+
+    await ProductModel.deleteOne({ slug });
+
+    res.status(200).send({
+      msg: "Product deleted successfully.",
+    });
+  } catch (error) {
+    res.status(404).send(ErrorHandler(error));
+  }
+}
+
 async function createProduct(req, res) {
   try {
     const { name, slug, description, short_description, tags, category } =
@@ -110,5 +124,6 @@ async function createProduct(req, res) {
 export default {
   getProducts,
   getProduct,
+  deleteProduct,
   createProduct,
 };
