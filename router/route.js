@@ -3,6 +3,7 @@ import {
   CategoryController,
   AuthController,
   MailController,
+  ProductController,
 } from "../controller/index.js";
 
 import Auth from "../middleware/auth.js";
@@ -41,12 +42,15 @@ router.route("/auth/resetPassword").put(VerifyUser, AuthController.updateUser);
 router.route("/category").get(CategoryController.getCategories);
 router.route("/category").post(CategoryController.createCategory);
 router.route("/category/:id").patch(CategoryController.updateCategory);
-
 router
   .route("/category/:id/thumbnail")
   .post(
     FileUploader.single("file"),
     CategoryController.updateCategoryThumbnail
   );
+
+// Product Routes
+router.route("/products").get(ProductController.getProducts);
+router.route("/products").post(ProductController.createProduct);
 
 export default router;
