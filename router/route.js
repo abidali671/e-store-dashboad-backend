@@ -56,5 +56,6 @@ router.route("/products").get(ProductController.getProducts);
 router.route("/products").post(ProductController.createProduct);
 router.route("/products/:slug").get(ProductController.getProduct);
 router.route("/products/:slug").delete(ProductController.deleteProduct);
+router.route("/products/:id").patch(ProductController.updateProduct);
 
 export default router;

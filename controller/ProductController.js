@@ -1,6 +1,7 @@
 import { v2 as cloudinary } from "cloudinary";
 import { ProductModel } from "../model/index.js";
 import { CleanObject, ErrorHandler } from "../utils/index.js";
+import ProductSchema from "../schema/product.schema.js";
 
 async function getProducts(_, res) {
   try {
@@ -79,28 +80,30 @@ async function createProduct(req, res) {
   }
 }
 
-// // Create Category API Controller
-// async function updateCategory(req, res) {
-//   try {
-//     const { id } = req.params;
-//     const { name, description, slug, thumbnail } = await CategoryModal.findOne({
-//       _id: id,
-//     });
+async function updateProduct(req, res) {
+  try {
+    const { id } = req.params;
+    const { _id, ...productDetail } = await ProductModel.findOne({
+      _id: id,
+    }).lean();
 
-//     const updatedCategory = { name, description, slug, thumbnail, ...req.body };
+    const { id: ID, ...updatedProduct } = {
+      ...CleanObject(productDetail),
+      ...req.body,
+    };
 
-//     await CategorySchema.validate(updatedCategory, {
-//       strict: true,
-//       abortEarly: false,
-//     });
+    await ProductSchema.validate(updatedProduct, {
+      strict: true,
+      abortEarly: false,
+    });
 
-//     await CategoryModal.updateOne({ _id: id }, updatedCategory);
+    await ProductModel.updateOne({ _id }, updatedProduct);
 
-//     res.status(201).send(req.body);
-//   } catch (error) {
-//     res.status(500).send(ErrorHandler(error));
-//   }
-// }
+    res.status(201).send({ msg: "Product updated successfully" });
+  } catch (error) {
+    res.status(500).send(ErrorHandler(error));
+  }
+}
 
 // async function updateCategoryThumbnail(req, res) {
 //   try {
@@ -126,4 +129,5 @@ export default {
   getProduct,
   deleteProduct,
   createProduct,
+  updateProduct,
 };
