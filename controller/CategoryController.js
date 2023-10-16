@@ -83,7 +83,7 @@ async function updateCategory(req, res) {
 
     await CategoryModal.updateOne({ _id: id }, updatedCategory);
 
-    res.status(201).send({ msg: "Category edit successfully" });
+    res.status(201).send({ msg: "Category edited successfully" });
   } catch (error) {
     res.status(500).send(ErrorHandler(error));
   }
