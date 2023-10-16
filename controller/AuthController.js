@@ -123,7 +123,7 @@ async function verifyOTP(req, res) {
     if (parseInt(req.app.locals.OTP) === parseInt(code)) {
       req.app.locals.OTP = null;
       req.app.locals.resetSession = true;
-      return res.status(201).send({ msg: "Verify Successfully" });
+      return res.status(201).send({ msg: "Verify successfully" });
     }
     throw "Invalid OTP!";
   } catch (error) {

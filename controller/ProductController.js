@@ -41,7 +41,7 @@ async function deleteProduct(req, res) {
     await ProductModel.deleteOne({ slug });
 
     res.status(200).send({
-      msg: "Product deleted successfully.",
+      msg: "Product deleted successfully",
     });
   } catch (error) {
     res.status(404).send(ErrorHandler(error));

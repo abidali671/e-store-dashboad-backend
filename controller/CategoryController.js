@@ -37,7 +37,7 @@ async function deleteCategory(req, res) {
     const { slug } = req.params;
     await CategoryModal.deleteOne({ slug });
 
-    res.status(201).send({ msg: "Category deleted successfully." });
+    res.status(201).send({ msg: "Category deleted successfully" });
   } catch (error) {
     res.status(404).send(ErrorHandler(error));
   }
@@ -83,7 +83,7 @@ async function updateCategory(req, res) {
 
     await CategoryModal.updateOne({ _id: id }, updatedCategory);
 
-    res.status(201).send(req.body);
+    res.status(201).send({ msg: "Category edit successfully" });
   } catch (error) {
     res.status(500).send(ErrorHandler(error));
   }
